@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import {
   monthNames,
-  currentMonth,
-  currentYear,
   generateRecurringEvents,
   combineEvents,
 } from './components/calendar/generators'
@@ -11,16 +9,8 @@ import { useLocalStorage } from '@vueuse/core'
 
 import ColorSchemaToggle from './components/calendar/ColorSchemaToggle.vue'
 
-const year = useLocalStorage('year', currentYear())
-const month = useLocalStorage('month', currentMonth())
-
-// watch(
-//   () => isDark.value,
-//   (val) => {
-//     document.documentElement.classList.toggle('dark', val)
-//   },
-//   { immediate: true },
-// )
+const year = useLocalStorage('year', 2026)
+const month = useLocalStorage('month', 1)
 
 const themes = {
   cyan: 'text-cyan-600 group-hover:text-cyan-600 dark:text-cyan-300 dark:group-hover:text-cyan-400 data-dot:bg-cyan-400 dark:data-dot:bg-cyan-500',
@@ -106,21 +96,8 @@ const holidays = (() => {
   })
 })()
 
-// let offset = -6
-// let release = 1
-// const holidays = generateRecurringEvents('2026-01-04', 21, 7, ({ index, isOdd }) => {
-//   if (offset % 3 === 1) {
-//     release++
-//   }
-//   return {
-//     name: `C) ${++offset % 3 === 1 ? 'Production' : 'Stage'} ${release} Release`,
-//     color: themes.tertiary,
-//     id: crypto.randomUUID(),
-//   }
-// })
 const range = 6
 const selectedDays = ref(combineEvents(sp1Events, sp2Events, holidays))
-const theme = useLocalStorage<string>('theme', 'system')
 </script>
 
 <template>
@@ -148,12 +125,7 @@ const theme = useLocalStorage<string>('theme', 'system')
         </select>
       </div>
       <div class="items-center">
-        <ColorSchemaToggle v-model="theme" />
-        <!-- <button @click="toggleDark()">
-          <i inline-block align-middle i="dark:carbon-moon carbon-sun" />
-          <SystemThemIcon class="text-white stroke-px" />
-          <span class="dark:text-white/60">{{ isDark ? 'Light' : 'Dark' }}</span>
-        </button> -->
+        <ColorSchemaToggle />
       </div>
     </div>
 

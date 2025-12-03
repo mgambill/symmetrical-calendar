@@ -42,7 +42,6 @@ const isSelected = (day: Day) => {
 const days = computed(() => {
   return source.value.map((d) => {
     const ev = selectedDays[d.date]
-    console.log('ev', ev)
     return {
       ...d,
       events: ev ? (Array.isArray(ev) ? ev : [ev]) : [],
@@ -136,10 +135,7 @@ const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
           <span class="sr-only">{day.events.length} events</span>
           <span v-if="item.events.length > 0" class="-mx-0.5 mt-auto flex flex-wrap-reverse">
             <template v-for="event in item.events" :key="event.id">
-              <span
-                data-dot
-                :class="['mx-0.5 mb-1 size-1.5 rounded-full', event.color]"
-              ></span>
+              <span data-dot :class="['mx-0.5 mb-1 size-1.5 rounded-full', event.color]"></span>
             </template>
           </span>
         </button>

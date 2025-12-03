@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { SystemThemIcon, LightThemeIcon, DarkThemeIcon } from '@/assets/logos'
 const model = defineModel<string>('theme', {
-  required: true,
   default: 'system',
 })
 const items = [
@@ -13,9 +12,7 @@ const items = [
 const applyTheme = (theme: string) => {
   const html = document.documentElement
   if (theme === 'system') {
-    const isDark = window.matchMedia(
-      '(prefers-color-scheme: dark)'
-    ).matches
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
     html.setAttribute('data-theme', isDark ? 'dark' : 'light')
   } else {
     html.setAttribute('data-theme', theme)
@@ -34,7 +31,6 @@ onMounted(() => {
 })
 
 watch(model, applyTheme)
-
 </script>
 <template>
   <div class="grid grid-cols-1 max-sm:hidden">
