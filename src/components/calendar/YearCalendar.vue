@@ -4,7 +4,7 @@ import {
   currentMonth,
   currentYear,
   type Day,
-  type CalendarEvents
+  type CalendarEvents,
 } from './generators'
 
 type Props = {
@@ -135,11 +135,12 @@ const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
           >
           <span class="sr-only">{day.events.length} events</span>
           <span v-if="item.events.length > 0" class="-mx-0.5 mt-auto flex flex-wrap-reverse">
-            <span
-              v-for="event in item.events"
-              :key="event.id"
-              class="mx-0.5 mb-1 size-1.5 rounded-full bg-gray-400 dark:bg-gray-500"
-            ></span>
+            <template v-for="event in item.events" :key="event.id">
+              <span
+                data-dot
+                :class="['mx-0.5 mb-1 size-1.5 rounded-full', event.color]"
+              ></span>
+            </template>
           </span>
         </button>
       </div>
