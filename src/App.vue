@@ -55,25 +55,33 @@ const sp1Events = (() => {
 })()
 
 //const sp2Events = threeWeek()
-const sp2Events = [
-  {
-    name: `B) 26.1 Stage`,
-    color: themes.orange,
-    date: '2026-01-11',
-    id: crypto.randomUUID(),
-  },
-  {
-    name: `B) 26.1 Production`,
-    color: themes.orange,
-    date: '2026-01-18',
-    id: crypto.randomUUID(),
-  },
-  ...generateRecurringEvents('2026-02-08', 21, 7, ({ index, isOdd }) => ({
-    name: `B) 26.${(isOdd ? index : index + 1) + 1} ${isOdd ? 'Production' : 'Stage'}`,
-    color: themes.orange,
-    id: crypto.randomUUID(),
-  })),
-]
+const sp2Events = (() => {
+  let rel = 0
+  return [
+    {
+      name: `B) 26.1 Stage`,
+      color: themes.orange,
+      date: '2026-01-11',
+      id: crypto.randomUUID(),
+    },
+    {
+      name: `B) 26.1 Production`,
+      color: themes.orange,
+      date: '2026-01-18',
+      id: crypto.randomUUID(),
+    },
+    ...generateRecurringEvents('2026-02-08', 21, 7, ({ index, isOdd }) => {
+      if (index % 2 === 0) {
+        rel++
+      }
+      return {
+        name: `B) 26.${rel + 1} ${isOdd ? 'Production' : 'Stage'}`,
+        color: themes.orange,
+        id: crypto.randomUUID(),
+      }
+    }),
+  ]
+})()
 
 const holidays = (() => {
   const temp = [
@@ -131,7 +139,7 @@ const selectedDays = ref(combineEvents(sp1Events, sp2Events, holidays))
 
     <div class="p-4 border-t border-gray-500/50">
       <template v-for="i in range" :key="i">
-        <p class="pb-2 pt-4">{{ monthNames[i + month - 2] }}</p>
+        <p class="pb-2 pt-4 text-gray-700 dark:text-gray-300">{{ monthNames[i + month - 2] }}</p>
         <YearCalendar :year="year" :month="month + i - 1" :selectedDays />
       </template>
     </div>
