@@ -4,8 +4,7 @@ import {
   currentMonth,
   currentYear,
   type Day,
-  type CalendarEvents,
-  type DayEvent,
+  type CalendarEvents
 } from './generators'
 
 type Props = {
@@ -13,6 +12,16 @@ type Props = {
 }
 
 const { selectedDays } = defineProps<Props>()
+
+type CalendarSettings = {
+  showEvents?: 'all' | 'scoped' | 'never'
+  showDays?: 'all' | 'scoped'
+}
+
+const settings: CalendarSettings = {
+  showEvents: 'scoped',
+  showDays: 'scoped',
+}
 
 const selectedYear = defineModel<number>('year', { required: true, default: currentYear() })
 const selectedMonth = defineModel<number>('month', { required: true, default: currentMonth() })
@@ -42,6 +51,8 @@ const days = computed(() => {
 })
 
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+// lg:grid-rows-7 | lg:grid-rows-6 | lg:grid-rows-5
 </script>
 
 <template>
@@ -61,7 +72,9 @@ const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
     <div
       class="flex bg-gray-200 text-xs/6 text-gray-700 lg:flex-auto dark:bg-white/10 dark:text-gray-300"
     >
-      <div class="hidden w-full lg:grid lg:grid-cols-7 lg:grid-rows-6 lg:gap-px">
+      <div
+        :class="`hidden w-full lg:grid lg:grid-cols-7 lg:grid-rows-${days.length / 7} lg:gap-px`"
+      >
         <template v-for="item in days" :key="item.date">
           <div
             :data-is-current-month="item.isCurrentMonth ? '' : undefined"
@@ -69,32 +82,43 @@ const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
             class="min-h-28 group relative bg-gray-50 px-3 py-2 text-gray-500 data-is-current-month:bg-white dark:bg-gray-900 dark:text-gray-400 dark:not-data-is-current-month:before:pointer-events-none dark:not-data-is-current-month:before:absolute dark:not-data-is-current-month:before:inset-0 dark:not-data-is-current-month:before:bg-gray-800/50 dark:data-is-current-month:bg-gray-900"
           >
             <time
+              v-if="
+                settings.showDays === 'all' ||
+                (settings.showDays === 'scoped' && item.isCurrentMonth)
+              "
               :datetime="item.date"
               class="relative group-not-data-is-current-month:opacity-75 in-data-is-today:flex in-data-is-today:size-6 in-data-is-today:items-center in-data-is-today:justify-center in-data-is-today:rounded-full in-data-is-today:bg-indigo-600 in-data-is-today:font-semibold in-data-is-today:text-white dark:in-data-is-today:bg-indigo-500"
               >{{ item.day }}</time
             >
-            <ol v-if="item.events.length > 0" class="mt-2">
-              <li v-for="event in item.events.slice(0, 3)" :key="event.id">
-                <a :href="event.href" class="group flex">
-                  <p
-                    :class="['flex-auto truncate font-medium', event.color]"                  >
-                    {{ event.name }}
-                  </p>
-                  <time
-                    :datetime="event.datetime"
-                    class="ml-3 hidden flex-none text-gray-500 group-hover:text-indigo-600 xl:block dark:text-gray-400 dark:group-hover:text-indigo-400"
-                    >{{ event.time }}</time
-                  >
-                </a>
-              </li>
-              <li v-if="item.events.length > 3" class="text-gray-500 dark:text-gray-400">
-                + {{ item.events.length - 3 }} more
-              </li>
-            </ol>
+
+            <template
+              v-if="
+                settings.showEvents === 'all' ||
+                (settings.showEvents === 'scoped' && item.isCurrentMonth)
+              "
+            >
+              <ol v-if="item.events.length > 0" class="mt-2">
+                <li v-for="event in item.events.slice(0, 3)" :key="event.id">
+                  <a :href="event.href" class="group flex">
+                    <p :class="['flex-auto truncate font-medium', event.color]">
+                      {{ event.name }}
+                    </p>
+                    <time
+                      :datetime="event.datetime"
+                      class="ml-3 hidden flex-none text-gray-500 group-hover:text-indigo-600 xl:block dark:text-gray-400 dark:group-hover:text-indigo-400"
+                      >{{ event.time }}</time
+                    >
+                  </a>
+                </li>
+                <li v-if="item.events.length > 3" class="text-gray-500 dark:text-gray-400">
+                  + {{ item.events.length - 3 }} more
+                </li>
+              </ol></template
+            >
           </div>
         </template>
       </div>
-      <div class="isolate grid w-full grid-cols-7 grid-rows-6 gap-px lg:hidden">
+      <div :class="`isolate grid w-full grid-cols-7 grid-rows-${days.length / 7} gap-px lg:hidden`">
         <button
           v-for="item in days"
           :key="item.date"
@@ -121,8 +145,8 @@ const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
       </div>
     </div>
   </div>
-  <details>
+  <details v-if="false">
     <summary class="cursor-pointer text-sm text-gray-500 underline">Debug Info</summary>
-    <pre>{{ { selectedYear, selectedMonth, selectedDays, days } }}</pre>
+    <pre>{{ { selectedYear, selectedMonth, l: days.length / 7 } }}</pre>
   </details>
 </template>

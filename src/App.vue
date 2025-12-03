@@ -3,29 +3,88 @@ import {
   monthNames,
   currentMonth,
   currentYear,
-  type CalendarEvents,
+  generateRecurringEvents,
+  combineEvents,
 } from './components/calendar/generators'
 import YearCalendar from './components/calendar/YearCalendar.vue'
 import { useLocalStorage } from '@vueuse/core'
 const year = useLocalStorage('year', currentYear())
 const month = useLocalStorage('month', currentMonth())
 
-const selectedDays = ref<CalendarEvents>({
-  '2025-12-21': { name: 'Christmas Shopping', color: 'bg-red-500' },
-  '2025-12-25': { name: 'Christmas Day', color: 'bg-green-500' },
-  '2026-01-18': [
-    {
-      name: 'SP 1 Prod',
-      color:
-        'text-gray-900 group-hover:text-indigo-600 dark:text-cyan-200 dark:group-hover:text-indigo-400',
-    },
-    {
-      name: 'SP 2 Prod',
-      color:
-        'text-gray-900 group-hover:text-indigo-600 dark:text-sky-400 dark:group-hover:text-indigo-400',
-    },
-  ],
-})
+const themes = {
+  primary:
+    'text-gray-900 group-hover:text-indigo-600 dark:text-cyan-200 dark:group-hover:text-indigo-400',
+  secondary:
+    'text-gray-900 group-hover:text-indigo-600 dark:text-sky-400 dark:group-hover:text-indigo-400',
+  tertiary:
+    'text-gray-900 group-hover:text-indigo-600 dark:text-green-400 dark:group-hover:text-indigo-400',
+}
+
+const calmhsa = () => {
+  const temp = [
+    '2026-01-11',
+    '2026-01-18',
+    '2026-02-08',
+    '2026-02-22',
+
+    '2026-03-08',
+    '2026-03-22',
+    '2026-04-05',
+    '2026-04-19',
+    '2026-05-03',
+    '2026-05-17',
+    '2026-06-07',
+    '2026-06-21',
+  ]
+  let rel = 0
+  return temp.map((date, i) => {
+    if (i % 2 === 0) {
+      rel++
+    }
+    return {
+      name: `A) 26.${rel} ${i % 2 === 0 ? 'Stage' : 'Production'}`,
+      color: themes.primary,
+      id: crypto.randomUUID(),
+      date,
+    }
+  })
+}
+const sp1Events = calmhsa()
+
+//const sp2Events = threeWeek()
+const sp2Events = [
+  {
+    name: `B) 26.1 Stage`,
+    color: themes.secondary,
+    date: '2026-01-11',
+    id: crypto.randomUUID(),
+  },
+  {
+    name: `B) 26.1 Production`,
+    color: themes.secondary,
+    date: '2026-01-18',
+    id: crypto.randomUUID(),
+  },
+  ...generateRecurringEvents('2026-02-08', 21, 7, ({ index, isOdd }) => ({
+    name: `B) 26.${(isOdd ? index : index + 1) + 1} ${isOdd ? 'Production' : 'Stage'}  Release`,
+    color: themes.secondary,
+    id: crypto.randomUUID(),
+  })),
+]
+// let offset = -6
+// let release = 1
+// const holidays = generateRecurringEvents('2026-01-04', 21, 7, ({ index, isOdd }) => {
+//   if (offset % 3 === 1) {
+//     release++
+//   }
+//   return {
+//     name: `C) ${++offset % 3 === 1 ? 'Production' : 'Stage'} ${release} Release`,
+//     color: themes.tertiary,
+//     id: crypto.randomUUID(),
+//   }
+// })
+
+const selectedDays = ref(combineEvents(sp1Events, sp2Events))
 </script>
 
 <template>
@@ -53,7 +112,12 @@ const selectedDays = ref<CalendarEvents>({
     </div>
 
     <div class="p-4 border-t border-gray-500/50">
-      <YearCalendar :year="year" :month="month" :selectedDays />
+      <template v-for="i in 6" :key="i">
+        <p class="py-2">{{ monthNames[i - 1] }}</p>
+        <YearCalendar :year="year" :month="month + i - 1" :selectedDays />
+        <hr />
+      </template>
     </div>
+    <pre>{{ sp2Events.map((x) => x.date) }}</pre>
   </div>
 </template>
