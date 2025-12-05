@@ -5,10 +5,39 @@
 @theme {
   --font-sans: InterVariable, sans-serif;
   --font-sans--font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  --line-color: var(--color-gray-200);
 }
 
 html,
 body,
 #id {
   @apply min-h-screen;
+}
+
+.tree {
+  div[data-node] {
+    @apply relative;
+  }
+
+  ul {
+    @apply ml-5;
+  }
+
+  div[data-node]:not(.root)::before {
+    content: '';
+    @apply absolute inset-y-1/2 -left-2.5 block w-2 border-b border-(--line-color) opacity-20;
+  }
+
+  li:not(.root):not(:last-child) {
+    @apply relative;
+    &::after {
+      content: '';
+      @apply absolute inset-y-0 -left-2.5 border-l border-(--line-color) opacity-20;
+    }
+  }
+
+  li:not(.root):last-child > div[data-node]::after {
+    content: '';
+    @apply absolute inset-y-0 -left-2.5 block h-1/2 w-px bg-(--line-color) opacity-20;
+  }
 }
