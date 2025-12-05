@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import RoleItem from './RoleItem.vue'
 import { useRoleStore } from '../store'
+import { type Role } from '../types'
 
 const { root, categories } = useRoleStore()
 

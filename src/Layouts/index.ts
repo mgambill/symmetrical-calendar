@@ -39,8 +39,7 @@ export { useProvideLayoutStore }
 
 export function useLayoutStore() {
   const store = _useLayoutStore()
-  if (store == null)
-    throw new Error('Please call `useProvideLayoutStore` on the appropriate parent component')
+  if (store == null) throw new Error('Please call `useProvideLayoutStore` on the appropriate parent component')
   return store
 }
 

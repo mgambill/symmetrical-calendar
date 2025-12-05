@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { useLocalStorage } from '@vueuse/core'
-import {
-  monthNames,
-  generateRecurringEvents,
-  combineEvents,
-} from '../components/calendar/generators'
+import { monthNames, generateRecurringEvents, combineEvents } from '../components/calendar/generators'
 import YearCalendar from '../components/calendar/YearCalendar.vue'
 
 const year = useLocalStorage('year', 2026)

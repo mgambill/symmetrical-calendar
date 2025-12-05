@@ -1,7 +1,7 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["*.d.ts", "src/**/*", "src/**/*.vue", "modules/role/stores", "modules/role/store.ts"],
-  "exclude": ["src/**/__tests__/*"],
+  "include": ["*.d.ts", "src/**/*", "src/**/*.vue", "modules/**/*", "modules/**/*.ts"],
+  "exclude": ["src/**/__tests__/*", "modules/**/__tests__/*"],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "moduleResolution": "Bundler",
