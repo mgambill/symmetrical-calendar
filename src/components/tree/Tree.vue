@@ -16,7 +16,7 @@ provide('tree-context', {
 <template>
   <slot>
     <ul class="tree">
-      <TreeItem :role="root" :root="true" />
+      <TreeItem :item="root" :root="true" />
     </ul>
   </slot>
 </template>

@@ -15,8 +15,8 @@ const children = getChildren(item)
 </script>
 
 <template>
-  <li :data-root="isRoot ? '' : null">
-    <div><slot /></div>
+  <li :class="{ root: isRoot }">
+    <div data-node :class="{ root: isRoot }"><slot :item="item" /></div>
     <template v-if="_hasChildren">
       <ul>
         <TreeItem v-for="child in children" :key="getItemKey(child)" :item="child" :parent="item" />
