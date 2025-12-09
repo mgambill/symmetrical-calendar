@@ -28,7 +28,7 @@ const args = initializeTreeContext(root, {
                     {{ source.item.name }}
                   </span>
 
-                  <span class="font-mono text-xs bg-zinc-300 rounded px-2">
+                  <span class="font-mono text-xs bg-zinc-300 rounded px-2 dark:bg-zinc-950">
                     {{ source.item.value }}
                   </span>
                 </div>
