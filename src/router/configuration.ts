@@ -7,7 +7,7 @@ export default {
       path: '',
     },
     {
-      src: 'modules/role/pages',
+      src: 'modules/identity/role/pages',
       path: 'roles/',
     },
   ],

@@ -1,3 +1,5 @@
+export type RoleType = 'FULL_ACCESS' | 'SCOPED' | 'SYSTEM' | 'PUBLIC'
+
 export type Role = {
   id: string
   description: string
@@ -5,7 +7,9 @@ export type Role = {
   name: string
   roleCategory: number
   roleKind: string
-  roleType: string
+  roleType: RoleType
+  isScoped?: boolean
+  permissionLevel: 'ADMIN' | 'WRITE' | 'READ' | 'CREATE' | 'UPDATE' | 'DELETE' | null
   sortOrder: null
   value: string
   parentId: string | null
@@ -16,6 +20,6 @@ export type Role = {
 }
 
 export type Lookup = {
-  id: number,
+  id: number
   label: string
 }

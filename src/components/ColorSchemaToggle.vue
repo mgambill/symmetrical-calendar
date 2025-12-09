@@ -1,36 +1,42 @@
 <script setup lang="ts">
+import { useLocalStorage } from '@vueuse/core'
 import { SystemThemIcon, LightThemeIcon, DarkThemeIcon } from '@/assets/logos'
-const model = defineModel<string>('theme', {
-  default: 'system',
+
+const model = defineModel<string>('theme')
+const localTheme = useLocalStorage('theme', 'system')
+
+const theme = computed({
+  get: () => model.value ?? localTheme.value,
+  set: (value) => {
+    if (model.value !== undefined) model.value = value
+    localTheme.value = value
+  },
 })
+
 const items = [
   { label: 'System theme', value: 'system', icon: SystemThemIcon },
   { label: 'Light theme', value: 'light', icon: LightThemeIcon },
   { label: 'Dark theme', value: 'dark', icon: DarkThemeIcon },
 ]
 
-const applyTheme = (theme: string) => {
+const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+watchEffect(() => {
   const html = document.documentElement
-  if (theme === 'system') {
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    html.setAttribute('data-theme', isDark ? 'dark' : 'light')
+  const currentTheme = theme.value
+
+  if (currentTheme === 'system') {
+    html.setAttribute('data-theme', mediaQuery.matches ? 'dark' : 'light')
   } else {
-    html.setAttribute('data-theme', theme)
+    html.setAttribute('data-theme', currentTheme)
   }
-}
-
-onMounted(() => {
-  applyTheme(model.value)
-
-  // Listen to system theme changes when in 'system' mode
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-  const handleChange = () => {
-    if (model.value === 'system') applyTheme('system')
-  }
-  mediaQuery.addEventListener('change', handleChange)
 })
 
-watch(model, applyTheme)
+mediaQuery.addEventListener('change', () => {
+  if (theme.value === 'system') {
+    document.documentElement.setAttribute('data-theme', mediaQuery.matches ? 'dark' : 'light')
+  }
+})
 </script>
 <template>
   <div class="grid grid-cols-1 max-sm:hidden">
@@ -47,7 +53,7 @@ watch(model, applyTheme)
             name="theme-:re:"
             :aria-label="item.label"
             :value="item.value"
-            v-model="model"
+            v-model="theme"
           />
           <component :is="item.icon" />
         </div>

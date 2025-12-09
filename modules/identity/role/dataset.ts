@@ -1,14 +1,39 @@
-import { defineStore } from 'pinia'
-import type { Role, Lookup } from './types'
+import type { Lookup, Role } from "./types";
 
-export const useRoleStore = defineStore('role', () => {
-  return {
-    root: ROOT,
-    categories: CATEGORIES,
-  }
-})
+export const PERMISSION_LEVELS = [
+  {
+    key: 'ADMIN',
+    enabled: true,
+    label: 'Administrator',
+  },
+  {
+    key: 'WRITE',
+    enabled: true,
+    label: 'Read/Write',
+  },
+  {
+    key: 'READ',
+    enabled: true,
+    label: 'Read',
+  },
+  {
+    key: 'CREATE',
+    enabled: false,
+    label: 'CREATE',
+  },
+  {
+    key: 'UPDATE',
+    enabled: false,
+    label: 'UPDATE',
+  },
+  {
+    key: 'DELETE',
+    enabled: false,
+    label: 'DELETE',
+  },
+]
 
-const CATEGORIES = [
+export const CATEGORIES = [
   { id: 3101, label: 'Organization Roles' },
   { id: 3102, label: 'Patient Roles' },
   { id: 3103, label: 'Provider/Practitioner Roles' },
@@ -25,7 +50,7 @@ const CATEGORIES = [
   { id: 3114, label: 'Authorization Roles' },
 ] as Lookup[]
 
-const ROOT: Role = {
+export const ROOT: Role = {
   id: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
   description:
     'Grants a user full access to manage all aspects of the application. This role is intended for internal system administrators within the mint project.',
@@ -36,6 +61,7 @@ const ROOT: Role = {
   roleType: 'SYSTEM',
   sortOrder: null,
   value: 'System.Admin',
+  permissionLevel: 'ADMIN',
   lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/',
   depth: 1,
   sequence: 100,
@@ -51,16 +77,15 @@ const ROOT: Role = {
       roleType: 'FULL_ACCESS',
       sortOrder: null,
       value: 'Organization.Admin',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/100.89eb51b7-0545-4cbb-932e-025729e00d55/',
+      permissionLevel: 'ADMIN',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/100.89eb51b7-0545-4cbb-932e-025729e00d55/',
       depth: 2,
       sequence: 100,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
       children: [
         {
           id: 'fd09fe6b-61dc-45ce-9512-08e3a4d41228',
-          description:
-            'Grants a user the ability to read and write monitoring data for their assigned organizations.',
+          description: 'Grants a user the ability to read and write monitoring data for their assigned organizations.',
           isActive: true,
           name: 'Organization Writer',
           roleCategory: 3101,
@@ -68,6 +93,7 @@ const ROOT: Role = {
           roleType: 'SCOPED',
           sortOrder: null,
           value: 'Organization.ReadWrite',
+          permissionLevel: 'WRITE',
           lineage:
             '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/100.89eb51b7-0545-4cbb-932e-025729e00d55/100.fd09fe6b-61dc-45ce-9512-08e3a4d41228/',
           depth: 3,
@@ -76,10 +102,10 @@ const ROOT: Role = {
           children: [
             {
               id: '01346fc1-a487-4d4e-822d-b9dfc983cd95',
-              description:
-                'Grants a user the ability to read all organizations in the system, without organization-level restrictions.',
+              description: 'Grants a user the ability to read all organizations in the system, without organization-level restrictions.',
               isActive: true,
               name: 'Organization Reader',
+              permissionLevel: 'READ',
               roleCategory: 3101,
               roleKind: 'PRIMARY',
               roleType: 'PUBLIC',
@@ -98,8 +124,7 @@ const ROOT: Role = {
     },
     {
       id: 'd66e269e-21b9-4a9d-9178-586ff9ddc25b',
-      description:
-        'Grants a user access to administer practitioners across their assigned organizations.',
+      description: 'Grants a user access to administer practitioners across their assigned organizations.',
       isActive: true,
       name: 'Provider Administrator',
       roleCategory: 3103,
@@ -107,16 +132,15 @@ const ROOT: Role = {
       roleType: 'FULL_ACCESS',
       sortOrder: null,
       value: 'Provider.Admin',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/101.d66e269e-21b9-4a9d-9178-586ff9ddc25b/',
+      permissionLevel: 'ADMIN',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/101.d66e269e-21b9-4a9d-9178-586ff9ddc25b/',
       depth: 2,
       sequence: 101,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
       children: [
         {
           id: '20acb4f5-2eb7-40ec-b647-682bb26c368a',
-          description:
-            'Grants a user access to manage practitioner data for their assigned organizations.',
+          description: 'Grants a user access to manage practitioner data for their assigned organizations.',
           isActive: true,
           name: 'Provider Writer',
           roleCategory: 3103,
@@ -124,6 +148,7 @@ const ROOT: Role = {
           roleType: 'SCOPED',
           sortOrder: null,
           value: 'Provider.ReadWrite',
+          permissionLevel: 'WRITE',
           lineage:
             '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/101.d66e269e-21b9-4a9d-9178-586ff9ddc25b/100.20acb4f5-2eb7-40ec-b647-682bb26c368a/',
           depth: 3,
@@ -132,10 +157,10 @@ const ROOT: Role = {
           children: [
             {
               id: 'b8738a05-48e2-4cad-95b4-2d2b45d6c945',
-              description:
-                'Grants a user access to read practitioner data across their assigned organizations.',
+              description: 'Grants a user access to read practitioner data across their assigned organizations.',
               isActive: true,
               name: 'Provider Reader',
+              permissionLevel: 'READ',
               roleCategory: 3103,
               roleKind: 'PRIMARY',
               roleType: 'SCOPED',
@@ -163,16 +188,15 @@ const ROOT: Role = {
       roleType: 'FULL_ACCESS',
       sortOrder: null,
       value: 'User.Admin',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/102.dfbeb061-9ba4-4c6f-9455-704733558a37/',
+      permissionLevel: 'ADMIN',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/102.dfbeb061-9ba4-4c6f-9455-704733558a37/',
       depth: 2,
       sequence: 102,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
       children: [
         {
           id: 'db982fd6-2978-4286-b2e1-2d149bef190c',
-          description:
-            'Grants a user access to read and manage user data within their assigned organizations.',
+          description: 'Grants a user access to read and manage user data within their assigned organizations.',
           isActive: true,
           name: 'User Writer',
           roleCategory: 3107,
@@ -180,6 +204,7 @@ const ROOT: Role = {
           roleType: 'SCOPED',
           sortOrder: null,
           value: 'User.ReadWrite',
+          permissionLevel: 'WRITE',
           lineage:
             '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/102.dfbeb061-9ba4-4c6f-9455-704733558a37/100.db982fd6-2978-4286-b2e1-2d149bef190c/',
           depth: 3,
@@ -188,10 +213,10 @@ const ROOT: Role = {
           children: [
             {
               id: '12863333-5d89-4c2d-a83f-3c5ed268a635',
-              description:
-                'Grants a user the ability to read all user data across the system, without organization-level restrictions.',
+              description: 'Grants a user the ability to read all user data across the system, without organization-level restrictions.',
               isActive: true,
               name: 'User Reader',
+              permissionLevel: 'READ',
               roleCategory: 3107,
               roleKind: 'PRIMARY',
               roleType: 'PUBLIC',
@@ -218,13 +243,13 @@ const ROOT: Role = {
       roleType: 'FULL_ACCESS',
       sortOrder: null,
       value: 'Assessment.Admin',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/103.d0f569a7-17fe-4d94-8590-913ce33153f8/',
+      permissionLevel: 'ADMIN',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/103.d0f569a7-17fe-4d94-8590-913ce33153f8/',
       depth: 2,
       sequence: 103,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
       children: [
-        {
+       {
           id: '9f1699c3-ff80-4d63-9aeb-75cb2aa09509',
           description: 'Grants a user the ability to create and modify assessments.',
           isActive: true,
@@ -234,6 +259,7 @@ const ROOT: Role = {
           roleType: 'SCOPED',
           sortOrder: null,
           value: 'Assessment.ReadWrite',
+          permissionLevel: 'WRITE',
           lineage:
             '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/103.d0f569a7-17fe-4d94-8590-913ce33153f8/100.9f1699c3-ff80-4d63-9aeb-75cb2aa09509/',
           depth: 3,
@@ -245,6 +271,7 @@ const ROOT: Role = {
               description: 'Grants a user the ability to read assessments.',
               isActive: true,
               name: 'Assessment Reader',
+              permissionLevel: 'READ',
               roleCategory: 3109,
               roleKind: 'PRIMARY',
               roleType: 'SCOPED',
@@ -263,8 +290,7 @@ const ROOT: Role = {
     },
     {
       id: 'a7beb920-ffe4-4458-b182-a50ff26dc143',
-      description:
-        'Grants a user full access to manage application features and provide support across the assigned organizations.',
+      description: 'Grants a user full access to manage application features and provide support across the assigned organizations.',
       isActive: true,
       name: 'Support Administrator',
       roleCategory: 3105,
@@ -272,8 +298,8 @@ const ROOT: Role = {
       roleType: 'FULL_ACCESS',
       sortOrder: null,
       value: 'Support.Admin',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/104.a7beb920-ffe4-4458-b182-a50ff26dc143/',
+      permissionLevel: 'ADMIN',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/104.a7beb920-ffe4-4458-b182-a50ff26dc143/',
       depth: 2,
       sequence: 104,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
@@ -289,6 +315,7 @@ const ROOT: Role = {
           roleType: 'PUBLIC',
           sortOrder: null,
           value: 'HIE.ReadWrite',
+          permissionLevel: 'WRITE',
           lineage:
             '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/104.a7beb920-ffe4-4458-b182-a50ff26dc143/100.462ed53a-124b-4308-a876-09fd65eb1358/',
           depth: 3,
@@ -308,8 +335,8 @@ const ROOT: Role = {
       roleType: 'FULL_ACCESS',
       sortOrder: null,
       value: 'Pathway.Admin',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/105.5909d8b3-6a56-4763-a2bd-a523987ecebf/',
+      permissionLevel: 'ADMIN',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/105.5909d8b3-6a56-4763-a2bd-a523987ecebf/',
       depth: 2,
       sequence: 105,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
@@ -324,6 +351,7 @@ const ROOT: Role = {
           roleType: 'SCOPED',
           sortOrder: null,
           value: 'Pathway.ReadWrite',
+          permissionLevel: 'WRITE',
           lineage:
             '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/105.5909d8b3-6a56-4763-a2bd-a523987ecebf/100.57e1ae07-669d-4c04-bb9e-db2d538a444e/',
           depth: 3,
@@ -335,6 +363,7 @@ const ROOT: Role = {
               description: 'Grants a user the ability to read pathways.',
               isActive: true,
               name: 'Pathway Reader',
+              permissionLevel: 'READ',
               roleCategory: 3108,
               roleKind: 'PRIMARY',
               roleType: 'SCOPED',
@@ -359,6 +388,7 @@ const ROOT: Role = {
           roleType: 'SCOPED',
           sortOrder: null,
           value: 'PathwayTemplate.ReadWrite',
+          permissionLevel: null,
           lineage:
             '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/105.5909d8b3-6a56-4763-a2bd-a523987ecebf/101.c1379fb7-45ed-4f31-9c77-00c18ebd5e73/',
           depth: 3,
@@ -378,8 +408,8 @@ const ROOT: Role = {
       roleType: 'SCOPED',
       sortOrder: null,
       value: 'Consent.ReadWrite',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/106.fdca1ab0-68c5-4132-ba63-0de25d613607/',
+      permissionLevel: 'WRITE',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/106.fdca1ab0-68c5-4132-ba63-0de25d613607/',
       depth: 2,
       sequence: 106,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
@@ -389,6 +419,7 @@ const ROOT: Role = {
           description: 'Grants a user the ability to read patient consent.',
           isActive: true,
           name: 'Consent Reader',
+          permissionLevel: 'READ',
           roleCategory: 3111,
           roleKind: 'PRIMARY',
           roleType: 'SCOPED',
@@ -413,8 +444,8 @@ const ROOT: Role = {
       roleType: 'PUBLIC',
       sortOrder: null,
       value: 'Notification.ReadWrite',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/107.1df0cd1e-0222-4aba-9a09-2b264efbb639/',
+      permissionLevel: 'WRITE',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/107.1df0cd1e-0222-4aba-9a09-2b264efbb639/',
       depth: 2,
       sequence: 107,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
@@ -430,8 +461,8 @@ const ROOT: Role = {
       roleType: 'SCOPED',
       sortOrder: null,
       value: 'Admission.ReadWrite',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/108.02ed3653-49bf-4a43-88ab-32ebc9c6ff70/',
+      permissionLevel: 'WRITE',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/108.02ed3653-49bf-4a43-88ab-32ebc9c6ff70/',
       depth: 2,
       sequence: 108,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
@@ -441,6 +472,7 @@ const ROOT: Role = {
           description: 'Grants a user the ability to see admission related data.',
           isActive: true,
           name: 'Admission Reader',
+          permissionLevel: 'READ',
           roleCategory: 3112,
           roleKind: 'PRIMARY',
           roleType: 'SCOPED',
@@ -463,10 +495,10 @@ const ROOT: Role = {
       roleCategory: 3112,
       roleKind: 'SUPPLEMENTARY',
       roleType: 'SCOPED',
+      permissionLevel: null,
       sortOrder: null,
       value: 'Admission.Import',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/109.8be2e9e6-f6a3-4bc5-8b1c-1e53ab32e1c9/',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/109.8be2e9e6-f6a3-4bc5-8b1c-1e53ab32e1c9/',
       depth: 2,
       sequence: 109,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
@@ -482,8 +514,8 @@ const ROOT: Role = {
       roleType: 'SCOPED',
       sortOrder: null,
       value: 'Referral.ReadWrite',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/109.8b1ec9d5-f5a4-44e3-880d-354ead13a948/',
+      permissionLevel: 'WRITE',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/109.8b1ec9d5-f5a4-44e3-880d-354ead13a948/',
       depth: 2,
       sequence: 109,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
@@ -493,6 +525,7 @@ const ROOT: Role = {
           description: 'Grants a user the ability to read referrals.',
           isActive: true,
           name: 'Referral Reader',
+          permissionLevel: 'READ',
           roleCategory: 3110,
           roleKind: 'PRIMARY',
           roleType: 'SCOPED',
@@ -509,8 +542,7 @@ const ROOT: Role = {
     },
     {
       id: '6c6f8993-7183-453e-9d3a-5884162c0a0b',
-      description:
-        'Grants a user access to read and write patient data within their assigned organizations.',
+      description: 'Grants a user access to read and write patient data within their assigned organizations.',
       isActive: true,
       name: 'Patient Writer',
       roleCategory: 3102,
@@ -518,18 +550,18 @@ const ROOT: Role = {
       roleType: 'SCOPED',
       sortOrder: null,
       value: 'Patient.ReadWrite',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/110.6c6f8993-7183-453e-9d3a-5884162c0a0b/',
+      permissionLevel: 'WRITE',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/110.6c6f8993-7183-453e-9d3a-5884162c0a0b/',
       depth: 2,
       sequence: 110,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
       children: [
         {
           id: '125c70ff-8913-48f1-b9a3-b700985e6be8',
-          description:
-            'Grants a user access to read patient data within their assigned organizations.',
+          description: 'Grants a user access to read patient data within their assigned organizations.',
           isActive: true,
           name: 'Patient Reader',
+          permissionLevel: 'READ',
           roleCategory: 3102,
           roleKind: 'PRIMARY',
           roleType: 'SCOPED',
@@ -551,6 +583,7 @@ const ROOT: Role = {
           roleKind: 'SUPPLEMENTARY',
           roleType: 'SCOPED',
           sortOrder: null,
+          permissionLevel: null,
           value: 'Patient.Import',
           lineage:
             '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/110.6c6f8993-7183-453e-9d3a-5884162c0a0b/101.cd1748a3-92cf-4af0-bf72-0935d9012903/',
@@ -571,16 +604,15 @@ const ROOT: Role = {
       roleType: 'FULL_ACCESS',
       sortOrder: null,
       value: 'Authorization.Administrator',
-      lineage:
-        '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/111.4f37d936-da83-46da-b776-b7dc333d55e6/',
+      permissionLevel: 'ADMIN',
+      lineage: '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/111.4f37d936-da83-46da-b776-b7dc333d55e6/',
       depth: 2,
       sequence: 111,
       parentId: '2a230f7f-c9c2-4d20-85e8-8003f57d2f58',
       children: [
         {
           id: '832398e6-22b7-4271-91fd-439b4e8a301f',
-          description:
-            'Grants a user access to read and write authorization data within their assigned organizations',
+          description: 'Grants a user access to read and write authorization data within their assigned organizations',
           isActive: true,
           name: 'Authorization Writer',
           roleCategory: 3114,
@@ -588,6 +620,7 @@ const ROOT: Role = {
           roleType: 'SCOPED',
           sortOrder: null,
           value: 'Authorization.ReadWrite',
+          permissionLevel: 'WRITE',
           lineage:
             '/100.2a230f7f-c9c2-4d20-85e8-8003f57d2f58/111.4f37d936-da83-46da-b776-b7dc333d55e6/100.832398e6-22b7-4271-91fd-439b4e8a301f/',
           depth: 3,
@@ -596,10 +629,10 @@ const ROOT: Role = {
           children: [
             {
               id: '5451b064-1551-42bb-a229-d3355b3116f7',
-              description:
-                'Grants a user access to read authorization data within their assigned organizations',
+              description: 'Grants a user access to read authorization data within their assigned organizations',
               isActive: true,
               name: 'Authorization Reader',
+              permissionLevel: 'READ',
               roleCategory: 3114,
               roleKind: 'PRIMARY',
               roleType: 'SCOPED',
@@ -620,6 +653,7 @@ const ROOT: Role = {
               roleCategory: 3114,
               roleKind: 'SUPPLEMENTARY',
               roleType: 'SCOPED',
+              permissionLevel: null,
               sortOrder: null,
               value: 'Authorization.Approver',
               lineage:
