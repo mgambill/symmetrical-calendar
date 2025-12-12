@@ -48,3 +48,12 @@ body,
     @apply absolute inset-y-0 -left-2.5 block h-1/2 w-px bg-(--line-color) opacity-20;
   }
 }
+
+@utility duo-primary-* {
+  --fa-primary-color: --value(--color-*);
+}
+
+@utility duo-secondary-* {
+  --fa-secondary-color: --value(--color-*);
+  --fa-secondary-opacity: 1;
+}

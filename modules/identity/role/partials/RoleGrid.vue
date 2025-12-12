@@ -7,7 +7,7 @@ const { permissionLevels, categories, getCategoryChildren, getRolesByCategory } 
 <template>
   <h2 class="dark:text-white text-3xl px-2 py-4">Permission Level</h2>
 
-  <div class="inline-grid grid-cols-[auto_1fr_1fr_1fr_1fr] dark:text-gray-300">
+  <div class="inline-grid grid-cols-[auto_1fr_1fr_1fr_1fr] dark:text-gray-300 w-full max-w-5xl">
     <section class="grid grid-cols-subgrid col-span-full">
       <div></div>
       <div class="text-center p-4 font-medium">None</div>

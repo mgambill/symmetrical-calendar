@@ -31,29 +31,39 @@ const primaryRole = computed(() => {
       <span>{{ cat.label }}</span>
     </div>
 
-    <label class="block group-hover:hidden text-center">
-      <template v-if="primary === null">X</template>
-      <template v-else> - </template>
-    </label>
-    <label class="hidden group-hover:block text-center has-checked:bg-red-100 hover:bg-gray-50">
+    <label class="text-center">
+      <template v-if="primary === null">
+        <i class="fa-duotone fa-solid fa-circle-check duo-primary-red-600 duo-secondary-red-100 dark:duo-primary-red-200 dark:duo-secondary-red-800"></i>
+      </template>
+      <template v-else>
+        <i data-inherited class="fa-duotone fa-solid fa-circle-x duo-primary-zinc-500 duo-secondary-zinc-100 dark:duo-primary-zinc-400 dark:duo-secondary-zinc-800" ></i>
+      </template>
+
       <input
         type="radio"
         v-model="primary"
         :name="`${cat.id}`"
         :value="null"
-        class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-red-600 checked:bg-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-red-500 dark:checked:bg-red-500 dark:focus-visible:outline-red-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden"
+        class="relative size-0 opacity-0 hidden"
       />
     </label>
 
     <template v-for="role in set" :key="role.id">
-      <label class="block group-hover:hidden text-center">
-        <template v-if="primary === role.id">X</template>
-        <template v-else-if="primaryRole && role && primaryRole?.depth < role?.depth">Z</template>
-        <template v-else> - </template>
+      <label class="text-center">
+        <template v-if="primary === role.id">
+          <i data-checked class="fa-duotone fa-solid fa-circle-check duo-primary-green-600 duo-secondary-green-100 dark:duo-secondary-green-800 dark:duo-primary-green-500"></i>
+        </template>
+        <template v-else-if="primaryRole && role && primaryRole?.depth <= role?.depth">
+          <i data-inherited class="fa-duotone fa-solid fa-circle-half-horizontal duo-primary-green-600 duo-secondary-green-100 dark:duo-secondary-green-800 dark:duo-primary-green-500"></i>
+        </template>
+        <template v-else>
+          <i data-inherited class="fa-duotone fa-solid fa-circle-x duo-primary-zinc-500 duo-secondary-zinc-100 dark:duo-primary-zinc-400 dark:duo-secondary-zinc-800" ></i>
+        </template>
+        <input type="radio" v-model="primary" :name="`${cat.id}`" :value="role.id" class="opacity-0 size-0" />
       </label>
-      <label class="hidden group-hover:block text-center has-checked:bg-green-100 hover:bg-gray-50"
-        ><input type="radio" v-model="primary" :name="`${cat.id}`" :value="role.id"
-      /></label>
+      <!-- <label class="hidden group-hover:block text-center has-checked:bg-green-100 dark:has-checked:bg-green-800 hover:bg-gray-50 dark:hover:bg-gray-800"
+        >
+        /></label> -->
     </template>
 
     <template v-for="role in getRolesByCategory(cat.id).filter((r) => r.roleKind !== 'PRIMARY')" :key="role.id">
