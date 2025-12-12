@@ -1,0 +1,6 @@
+# Netlify configuration
+# SPA fallback to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
