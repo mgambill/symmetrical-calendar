@@ -9,8 +9,8 @@ const profile = ref<Profile>(null)
 <template>
   <ProfileSelector v-model="profile"/>
   <div class="grid grid-cols-[1fr_3fr] min-h-screen">
-    <div></div>
-    <nav class="bg-gray-100 dark:bg-white/15 dark:text-gray-300 p-4" v-if="false">
+
+    <nav class="bg-gray-100 dark:bg-white/15 dark:text-gray-300 p-4" >
       <RoleTree />
     </nav>
     <section>
